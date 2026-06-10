@@ -1,0 +1,134 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define T true
+#define F false
+#define MOD1 1000000007
+#define MOD2 998244353
+int dx[] = { 1,1,1,0,0,-1,-1,-1 };
+int dy[] = { -1,0,1,-1,1,-1,0,1 };
+const int MAX_M = 1005;
+//结构体
+struct node
+{
+    ll i;
+    double d;
+    string s;
+    bool b;
+    char c;
+};
+//大数运算
+string add(string a, string b) 
+{
+    int lena = a.size();
+    int lenb = b.size();
+    int len = max(lena, lenb);
+    vector<int> A(lena);
+    vector<int> B(lenb);
+    for (int i = 0; i < lena; ++i) 
+        A[i] = a[lena - 1 - i] - '0';
+    for (int i = 0; i < lenb; ++i) 
+        B[i] = b[lenb - 1 - i] - '0';
+    vector<int> out(len + 1, 0);
+    for (int i = 0; i < len; ++i) 
+    {
+        if (i < lena) 
+            out[i] += A[i];
+        if (i < lenb) 
+            out[i] += B[i];
+        out[i + 1] += out[i] / 10;
+        out[i] %= 10;
+    }
+    while (len > 0 && out[len] == 0) 
+        --len;
+    string res;
+    for (int i = len; i >= 0; --i) 
+        res += (char)(out[i] + '0');
+    return res.empty() ? "0" : res;
+}
+
+string mul(string a, string b) 
+{
+    int lena = a.size();
+    int lenb = b.size();
+    vector<int> A(lena); 
+    vector<int> B(lenb);
+    for (int i = 0; i < lena; ++i) 
+        A[i] = a[lena - 1 - i] - '0';
+    for (int i = 0; i < lenb; ++i) 
+        B[i] = b[lenb - 1 - i] - '0';
+    vector<int> C(lena + lenb, 0);
+    for (int i = 0; i < lena; ++i)
+        for (int j = 0; j < lenb; ++j)
+            C[i + j] += A[i] * B[j];
+
+    for (int i = 0; i < (int)C.size() - 1; ++i) 
+    {
+        C[i + 1] += C[i] / 10;
+        C[i] %= 10;
+    }
+
+    int len = C.size();
+    while (len > 1 && C[len - 1] == 0) 
+        --len;
+    string res;
+    for (int i = len - 1; i >= 0; --i) 
+        res += (char)(C[i] + '0');
+    return res.empty() ? "0" : res;
+}
+//快速幂a^b%mod
+ll qpow(ll a, ll b, ll mod)
+{
+    ll res = 1 % mod;
+    while (b)
+    {
+        if (b & 1) res = res * a % mod;
+        a = a * a % mod;
+        b >>= 1;
+    }
+    return res;
+}
+//GCD/LCM
+ll gcd(ll a, ll b) { return b ? gcd(b, a % b) : a; }
+ll lcm(ll a, ll b) { return a / gcd(a, b) * b; }
+//有向计数（每对双向各算一次）
+ll neighbor_sum(ll n, ll m, ll target, int grid[][MAX_M])
+{
+    ll ans = 0;
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            for (int k = 0; k < 8; k++)
+            {
+                ll ni = i + dx[k], nj = j + dy[k];
+                if (ni >= 0 && ni < n && nj >= 0 && nj < m && grid[ni][nj] == target)
+                    ans++;
+            }
+    return ans;
+}
+//无向计数（每对只算一次）
+ll neighbor_sum_undirected(ll n, ll m, ll target, int grid[][MAX_M])
+{
+    return neighbor_sum(n, m, target, grid) / 2;
+}
+//DFS
+void dfs_pick(int pos, int n, int k, int cnt, int sum, int a[], int& ans)
+{
+    if (cnt == k)     
+    {
+        //if (check(sum)) 
+        //ans++;
+        return;
+    }
+    if (pos == n) return;
+
+    dfs_pick(pos + 1, n, k, cnt + 1, sum + a[pos], a, ans); 
+    dfs_pick(pos + 1, n, k, cnt, sum, a, ans); 
+}
+//int ans = 0; dfs_pick(0, n, k, 0, 0, a, ans);
+
+int main()
+{
+    ios::sync_with_stdio(F);
+    cin.tie(0);
+    cout.tie(0);
+}
